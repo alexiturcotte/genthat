@@ -52,4 +52,3 @@ environment_name <- function(env) {
 environment_name_as_code <- function(env) {
     .Call('_genthat_environment_name_as_code', PACKAGE = 'genthat', env)
 }
-

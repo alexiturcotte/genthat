@@ -290,7 +290,7 @@ trace_package <- function(pkgs, files_to_run,
     })
 
     run_file <- function(fname) {
-        log_debug("Running ", fname, " ...")
+        log_debug("Running ", fname, " ...") # this prints
 
         env <- c()
         site_file <- NULL
@@ -328,6 +328,7 @@ trace_package <- function(pkgs, files_to_run,
             paste(fname, "does not exist")
         } else {
             tryCatch({
+
                 run <- run_r_script(fname, site_file=site_file, env=env, quiet=quiet, lib_paths=lib_paths)
 
                 if (file.exists(stats_file)) {

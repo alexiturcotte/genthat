@@ -520,7 +520,7 @@ public:
 
             for (auto const& name : extracted_obj.attributeNames()) {
                 if (name.find("genthat_") == 0) {
-                    attrs[name] = extracted_obj.attr(name); 
+                    attrs[name] = extracted_obj.attr(name);
                     extracted_obj.attr(name) = R_NilValue;
                 }
             }

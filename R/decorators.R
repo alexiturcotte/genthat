@@ -105,11 +105,13 @@ decorate_with_count_entry <- function(fun, name, pkg, record_fun) {
 decorate_with_count_exit <- function(fun, name, pkg, record_fun) {
     check_decorate_args(fun, name, pkg, record_fun)
 
+    # which_file <- GENTHAT_CURRENT_FILE
+
     create_function(
         params=formals(fun),
         body=substitute({
             `__retv` <- BODY
-            genthat:::store_trace(genthat:::get_tracer(), genthat:::create_trace(NAME, PKG))
+            genthat:::store_trace(genthat:::get_tracer(), genthat:::create_trace(NAME, PKG)) # , current_file=which_file))
             `__retv`
         }, list(NAME=name, PKG=pkg, BODY=body(fun))),
         env=environment(fun),

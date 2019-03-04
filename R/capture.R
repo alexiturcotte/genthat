@@ -53,11 +53,13 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
         globals <- as.list(environment(extract_closure(callee)), all.names=TRUE)
         globals <- lapply(globals, duplicate_global_var)
 
-        create_trace(name, pkg, args=args, globals=globals, retv=retv, seed=seed, error=error)
+        # A: Below, GENTHAT_CURRENT_FILE is (hopefully) the global variable with the currently
+        #    running example. This should be threaded through to the tracer here.
+        create_trace(name, pkg, args=args, globals=globals, retv=retv, seed=seed, error=error, current_file=names(env))#$GENTHAT_CURRENT_FILE)
     }, error=function(e) {
-        create_trace(name, pkg, args=args, failure=e)
+        create_trace(name, pkg, args=args, failure=e, current_file=names(env))#$GENTHAT_CURRENT_FILE)
     }, warning=function(e) {
-        create_trace(name, pkg, args=args, failure=e)
+        create_trace(name, pkg, args=args, failure=e, current_file=names(env))#$GENTHAT_CURRENT_FILE)
     })
 
     store_trace(tracer, trace)

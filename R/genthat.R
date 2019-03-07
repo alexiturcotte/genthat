@@ -14,6 +14,7 @@ NULL
 
 #' @export
 #'
+#
 trace_from_source_package <- function(path, quiet=TRUE, ...) {
     package <- devtools::as.package(path)
 
@@ -39,6 +40,7 @@ trace_from_source_package <- function(path, quiet=TRUE, ...) {
 #' @importFrom magrittr %>%
 #' @export
 #'
+#
 gen_from_package <- function(pkgs_to_trace, pkgs_to_run=pkgs_to_trace,
                              types=c("examples", "tests", "vignettes", "all"),
                              action=c("stats", "export", "generate"),
@@ -315,7 +317,7 @@ trace_package <- function(pkgs, files_to_run,
             vars$output_dir <- output_dir
             vars$stats_file <- stats_file
             vars$max_trace_size <- getOption("genthat.max_trace_size", .Machine$integer.max)
-            vars$pkgs <- paste(pkgs, sep=",")
+            vars$pkgs <- paste(pkgs, collapse=",") #sep -> collapse
 
             # convert the variables to the expected format GENTHAT_<VAR>=<value>
             env <- sapply(names(vars), function(x) {
@@ -347,7 +349,7 @@ trace_package <- function(pkgs, files_to_run,
                     run
                 }
             }, error=function(e) {
-                e$message
+                "[Error!]: " + e$message
             })
         }
     }
@@ -409,6 +411,7 @@ export_action <- function(trace, output_dir, save_trace=TRUE) {
 #' @param file that has been running
 #' @export
 #'
+#
 process_traces <- function(traces, output_dir, action) {
     stopifnot(is.list(traces))
     stopifnot(is_chr_scalar(output_dir))
@@ -445,24 +448,28 @@ process_traces <- function(traces, output_dir, action) {
 #
 #' @export
 #'
+#
 enable_tracing <- function() {
     options(genthat.tracing=TRUE)
 }
 
 #' @export
 #'
+#
 disable_tracing <- function() {
     options(genthat.tracing=FALSE)
 }
 
 #' @export
 #'
+#
 is_tracing_enabled <- function() {
     isTRUE(getOption("genthat.tracing"))
 }
 
 #' @export
 #'
+#
 is_debug_enabled <- function() {
     isTRUE(getOption("genthat.debug"))
 }

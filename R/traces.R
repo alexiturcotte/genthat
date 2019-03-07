@@ -121,8 +121,7 @@ create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed,
     file_ran <- getOption("genthat.current_file")
     get_last_slash <- regexpr("/[^/]*$", file_ran)
     # get_last_slash[1] has location of last slash, +1 skips slash
-    # nchar(file_ran)-2 is to get rid of .R extension
-    file_ran <- substr(file_ran, get_last_slash[1]+1, nchar(file_ran)-2)
+    file_ran <- substr(file_ran, get_last_slash[1]+1, nchar(file_ran))
 
     trace <- list( fun=fun,
                    pkg=pkg,

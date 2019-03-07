@@ -433,7 +433,7 @@ public:
             } else if (TYPEOF(name) == LANGSXP) {
                 fun = serialize(name, false);
             } else {
-                throw serialization_error("Unknown CAR(x: LANGSXP): " + TYPEOF(name));
+                throw serialization_error("Unknown CAR(x: LANGSXP): ");// + TYPEOF(name));
             }
 
             string res;

@@ -95,17 +95,17 @@ create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed,
     # old trace result from genthat, which built up a minimum environment to
     # rerun the test
     # trace <- list(fun=fun, pkg=pkg, args=as.list(args), globals=as.list(globals))
-    globals <- as.list(globals)
-    special_eval <- function(x) {
-      tryCatch(
-        eval(x, globals),
-        error = function(e) {
-          r <- list()
-          attr(r, "typeR::did_it_work") <- FALSE
-          r
-      })
-    }
-    args <- lapply(as.list(args), special_eval)
+    # globals <- as.list(globals)
+    # special_eval <- function(x) {
+    #   tryCatch(
+    #     eval(x, globals),
+    #     error = function(e) {
+    #       r <- list()
+    #       attr(r, "typeR::did_it_work") <- FALSE
+    #       r
+    #   })
+    # }
+    # args <- lapply(as.list(args), special_eval)
 
     # build up...
     # ... arg_types:
@@ -132,7 +132,7 @@ create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed,
 
     if (!missing(retv)) {
         # trace$retv <- retv
-        retv <- special_eval(retv)
+        # retv <- special_eval(retv)
         trace$arg_types <- c(trace$arg_types, list(retv=get_type(retv)))
         trace$arg_attrs <- c(trace$arg_attrs, list(retv=get_attrs(retv)))
         trace$arg_classes <- c(trace$arg_classes, list(retv=get_class(retv)))

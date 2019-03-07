@@ -1,4 +1,5 @@
-#include <string>
+// #include <Rcpp.h>
+#include <map>
 
 #include "Utils.h"
 
@@ -12,6 +13,10 @@ std::map<size_t, bool> seenSigs;
 // this is the str version of the std hash function
 std::hash<std::string> str_hash;
 
+std::string make_into_string(SEXP s) {
+  return CHAR(STRING_ELT(s, 0));
+}
+
 // [[Rcpp::export]]
 bool is_interesting(std::string pkg_name, std::string fun_name, int arg_len, SEXP arg_names,
                     SEXP arg_types, SEXP arg_attrs, SEXP arg_classes) {
@@ -22,7 +27,9 @@ bool is_interesting(std::string pkg_name, std::string fun_name, int arg_len, SEX
   std::string aggr_string = pkg_name + ":" + fun_name + "/";
 
   for (int i = 0; i < arg_len; i++) {
-    aggr_string = aggr_string + arg_names[i] + "," + arg_types[i] + "," + arg_attrs[i] + "," + arg_classes[i] + "/";
+    // aggr_string = CHAR(STRING_ELT((VECTOR_ELT(arg_names, i)), 0));
+    aggr_string = aggr_string + make_into_string(VECTOR_ELT(arg_names, i)) + "," + make_into_string(VECTOR_ELT(arg_types, i)) +
+                  "," + make_into_string(VECTOR_ELT(arg_attrs, i)) + "," + make_into_string(VECTOR_ELT(arg_classes, i)) + "/";
   }
 
   // first.2: hash it
@@ -39,9 +46,7 @@ bool is_interesting(std::string pkg_name, std::string fun_name, int arg_len, SEX
     seenSigs[hashedSig] = true;
   }
 
-  // third, determine if we should tract
-
-  return collision;
+  return !collision;
 }
 
 // [[Rcpp::export]]

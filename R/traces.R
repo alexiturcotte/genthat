@@ -23,7 +23,8 @@ get_attrs <- function(v) {
       if (length(the_attrs) == 0)
         retv <- NA
       else
-        names(the_attrs) -> retv
+        retv <- lapply(the_attrs, get_type)
+        # names(the_attrs) -> retv
     }
     retv
   }
@@ -113,6 +114,7 @@ create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed,
 
     # ... arg_attrs:
     arg_attrs <- lapply(args, get_attrs)
+
     #
     # # ... arg_classes:
     arg_classes <- lapply(args, class)

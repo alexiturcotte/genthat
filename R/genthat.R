@@ -75,9 +75,6 @@ gen_from_package <- function(pkgs_to_trace, pkgs_to_run=pkgs_to_trace,
     files <- lapply(pkgs_to_run, extract_package_code, types=types, output_dir=working_dir, filter=filter)
     files <- unlist(files)
 
-    # TODO DEBUG TODO DEBUG FOR DEBUGGING, limiting run files to 4 (base)
-    files <- files[1:2]
-
     if (length(files) == 0) {
         return(data.frame(file=character(), output=character(),  error=character()))
     }

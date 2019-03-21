@@ -26,7 +26,7 @@ get_attrs <- function(v) {
         retv <- lapply(the_attrs, get_type)
         # names(the_attrs) -> retv
     }
-    retv
+    retv[sort(names(retv))]
   }
 }
 
@@ -130,7 +130,8 @@ create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed,
                    arg_types=arg_types,
                    arg_attrs=arg_attrs,
                    arg_classes=arg_classes,
-                   file_ran=file_ran)
+                   file_ran=file_ran,
+                   times_seen=1)
 
     if (!missing(retv)) {
         # trace$retv <- retv

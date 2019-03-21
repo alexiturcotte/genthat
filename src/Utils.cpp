@@ -18,7 +18,7 @@ std::string make_into_string(SEXP s) {
 }
 
 // [[Rcpp::export]]
-bool is_interesting(std::string pkg_name, std::string fun_name, int arg_len, SEXP arg_names,
+std::string is_interesting(std::string pkg_name, std::string fun_name, int arg_len, SEXP arg_names,
                     SEXP arg_types, SEXP arg_attrs, SEXP arg_classes) {
   // NOTE: ensure that arg_attrs passed as a list of strings, i.e. collate already
 
@@ -36,17 +36,19 @@ bool is_interesting(std::string pkg_name, std::string fun_name, int arg_len, SEX
   size_t hashedSig = str_hash(aggr_string);
 
   // second, see if hash collision occurs
-  bool collision = false;
+  // bool collision = false;
+  std::string interesting = "1_";
 
   if (seenSigs.find(hashedSig) != seenSigs.end()) {
     // in
-    collision = true;
+    // collision = true;
+    interesting = "0_";
   } else {
     // out, add it
     seenSigs[hashedSig] = true;
   }
 
-  return !collision;
+  return interesting + std::to_string(hashedSig);
 }
 
 // [[Rcpp::export]]

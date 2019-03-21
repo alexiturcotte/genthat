@@ -28,11 +28,18 @@ extract_package_code <- function(pkg, pkg_dir=find.package(pkg),
             vignettes=extract_package_vignettes
         )
 
+        export_dir_name <- paste0("genthat_extracted_code/", pkg, "/", type)
+
+        if (!dir.exists(export_dir_name))
+          dir.create(export_dir_name, recursive=TRUE)
+
         # each type has its own folder not to clash with one another
         output <- file.path(output_dir, type)
         stopifnot(dir.exists(output) || dir.create(output, recursive=TRUE))
 
         files <- fun(pkg, pkg_dir, output_dir=output)
+
+        file.copy(files, export_dir_name)
 
         if (!is.null(filter)) {
             files <- files[grepl(filter, tools::file_path_sans_ext(files))]

@@ -94,7 +94,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // is_interesting
-bool is_interesting(std::string pkg_name, std::string fun_name, int arg_len, SEXP arg_names, SEXP arg_types, SEXP arg_attrs, SEXP arg_classes);
+std::string is_interesting(std::string pkg_name, std::string fun_name, int arg_len, SEXP arg_names, SEXP arg_types, SEXP arg_attrs, SEXP arg_classes);
 RcppExport SEXP _genthat_is_interesting(SEXP pkg_nameSEXP, SEXP fun_nameSEXP, SEXP arg_lenSEXP, SEXP arg_namesSEXP, SEXP arg_typesSEXP, SEXP arg_attrsSEXP, SEXP arg_classesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

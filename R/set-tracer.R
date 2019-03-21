@@ -18,7 +18,8 @@ create_set_tracer <- function(session_file=NULL) {
         list(
             traces=new.env(parent=emptyenv(), hash=TRUE),
             known_traces=known_traces,
-            session_file=session_file
+            session_file=session_file,
+            hash_to_loc_map=new.env(parent=emptyenv(), hash=TRUE) # new
         ),
         class="set_tracer"
     )
@@ -36,16 +37,37 @@ store_trace.set_tracer <- function(tracer, trace) {
   #                arg_classes=arg_classes,
   #                file_ran=file_ran)
 
+  # This will be called any time something might be stored.
+  # Is this a good place to count the number of function invocations?
+
     arg_attrs = unname(lapply(trace$arg_attrs, function(x) {
       paste(c("{", paste(x[!is.na(x)], collapse=","), "}"), collapse="")
     }))
 
-    if (is_interesting(pkg_name=trace$pkg, fun_name=trace$fun, arg_len=length(trace$arg_types),
-                       arg_names=as.list(names(trace$arg_types)), arg_types=(unname(trace$arg_types)),
-                       arg_attrs=arg_attrs, arg_classes=(unname(trace$arg_classes)))) {
+    new_and_hash <- is_interesting(pkg_name=trace$pkg, fun_name=trace$fun, arg_len=length(trace$arg_types),
+                    arg_names=as.list(names(trace$arg_types)), arg_types=(unname(trace$arg_types)),
+                    arg_attrs=arg_attrs, arg_classes=(unname(trace$arg_classes)))
+
+    new_and_hash <- unlist(strsplit(new_and_hash, split="_"))
+    is_new <- new_and_hash[1]
+    hashed_sig <- new_and_hash[2]
+
+    if (is_new == "1")
+      is_new <- TRUE
+    else # is_new == "0"
+      is_new <- FALSE
+
+    if (is_new) {
         where <- toString(length(tracer$traces) + 1)
         assign(where, TRUE, envir=tracer$known_traces)
         tracer$traces[[where]] <- trace
+
+        # make sure to save hash in case we see it later
+        tracer$hash_to_loc_map[[hashed_sig]] <- where
+    } else {
+    #     # update trace entry with new count
+        tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen <-
+        tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen + 1
     }
 
     invisible(trace)
@@ -55,22 +77,44 @@ store_trace.set_tracer <- function(tracer, trace) {
 # #'
 # #
 # store_trace.set_tracer <- function(tracer, trace) {
-#     # we need to compute the digest without the seed
-#     trace_without_seed <- trace
-#     trace_without_seed$seed <- NULL
 #
-#     ser <- serialize(trace_without_seed, connection=NULL, ascii=FALSE)
+#   # trace <- list( fun=fun,
+#   #                pkg=pkg,
+#   #                arg_types=arg_types,
+#   #                arg_attrs=arg_attrs,
+#   #                arg_classes=arg_classes,
+#   #                file_ran=file_ran)
 #
-#     if (length(ser) > getOption("genthat.max_trace_size", .Machine$integer.max)) {
-#         trace <- create_trace(trace$fun, trace$pkg, skipped=length(ser))
-#         ser <- serialize(trace, connection=NULL, ascii=FALSE)
-#     }
+#   # This will be called any time something might be stored.
+#   # Is this a good place to count the number of function invocations?
 #
-#     key <- digest::digest(ser, algo="sha1", serialize=FALSE)
+#     arg_attrs = unname(lapply(trace$arg_attrs, function(x) {
+#       paste(c("{", paste(x[!is.na(x)], collapse=","), "}"), collapse="")
+#     }))
 #
-#     if (is.null(tracer$known_traces[[key]])) {
-#         tracer$known_traces[[key]] <- TRUE
-#         tracer$traces[[key]] <- trace
+#     new_and_hash <- is_interesting(pkg_name=trace$pkg, fun_name=trace$fun, arg_len=length(trace$arg_types),
+#                     arg_names=as.list(names(trace$arg_types)), arg_types=(unname(trace$arg_types)),
+#                     arg_attrs=arg_attrs, arg_classes=(unname(trace$arg_classes)))
+#
+#     new_and_hash <- unlist(strsplit(new_and_hash, split="_"))
+#     is_new <- new_and_hash[1]
+#     hashed_sig <- new_and_hash[2]
+#
+#     if (is_new == "1")
+#       is_new <- TRUE
+#     else # is_new == "0"
+#       is_new <- FALSE
+#
+#     if (is_new) {
+#         where <- toString(length(tracer$traces) + 1)
+#         assign(where, TRUE, envir=tracer$known_traces)
+#         tracer$traces[[where]] <- trace
+#
+#         # make sure to save hash in case we see it later
+#         tracer$hash_to_loc_map[[hashed_sig]] <- where
+#     } else {
+#         # update trace entry with new count
+#         tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen <- tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen + 1
 #     }
 #
 #     invisible(trace)

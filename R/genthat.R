@@ -75,6 +75,9 @@ gen_from_package <- function(pkgs_to_trace, pkgs_to_run=pkgs_to_trace,
     files <- lapply(pkgs_to_run, extract_package_code, types=types, output_dir=working_dir, filter=filter)
     files <- unlist(files)
 
+    # TODO DEBUG TODO DEBUG FOR DEBUGGING, limiting run files to 4 (base)
+    files <- files[1:2]
+
     if (length(files) == 0) {
         return(data.frame(file=character(), output=character(),  error=character()))
     }
@@ -291,8 +294,10 @@ trace_package <- function(pkgs, files_to_run,
         if (file.exists(set_tracer_session_file)) file.remove(set_tracer_session_file)
     })
 
+    times <- new.env(parent=emptyenv()) # for timing
+
     run_file <- function(fname) {
-        log_debug("Running ", fname, " ...") # this prints
+        log_debug("Running ", fname, " ...")
 
         env <- c()
         site_file <- NULL
@@ -330,8 +335,11 @@ trace_package <- function(pkgs, files_to_run,
             paste(fname, "does not exist")
         } else {
             tryCatch({
-
+                s <- Sys.time()
                 run <- run_r_script(fname, site_file=site_file, env=env, quiet=quiet, lib_paths=lib_paths)
+                saved_name <- unlist(strsplit(fname, split="/"))
+                saved_name <- paste(saved_name[length(saved_name)-1], saved_name[length(saved_name)], sep="/")
+                times[[saved_name]] <- Sys.time() - s
 
                 if (file.exists(stats_file)) {
                     # running of the file might have failed, but still some traces
@@ -355,7 +363,14 @@ trace_package <- function(pkgs, files_to_run,
     }
 
     log_debug("Running ", length(files_to_run), " files")
-    lapply(files_to_run, run_file)
+    r <- lapply(files_to_run, run_file)
+
+    if (!dir.exists("genthat_runtimes"))
+      dir.create("genthat_runtimes")
+
+    saveRDS(as.list(times), paste0("genthat_runtimes/", pkgs[1], "_runtimes.RDS"))
+
+    r
 }
 
 save_trace_file <- function(trace, output_dir, name) {

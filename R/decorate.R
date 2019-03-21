@@ -58,6 +58,11 @@ decorate_environment <- function(env,
     vals <- lapply(names, get, env=env)
     names(vals) <- names
 
+    # need to skip at most these, as they interfere with the analysis
+    # (we get infinite recursion, probably through onexit hooks)
+    funs_to_skip <- list("::", ":::", "<-", "get", "globalEnv", "on.exit", "typeof", "class", "attributes")
+    exclude <- c(exclude, funs_to_skip)
+
     funs <- filter(vals, is.function)
     funs <- funs[!(names(funs) %in% exclude)]
 

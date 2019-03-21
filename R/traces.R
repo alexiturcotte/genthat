@@ -88,7 +88,7 @@ get_class <- function(v) {
 # typeR modification: change to record type information only in the trace
 # alexi / Feb 2019
 #
-create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed, error, failure, skipped=0, current_file) {
+create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed, error, failure, skipped=0) {
     stopifnot(is.character(fun) && length(fun) == 1)
     stopifnot(is.null(pkg) || (is.character(pkg) && length(pkg) == 1))
     stopifnot(missing(retv) || missing(error) || missing(failure))
@@ -121,9 +121,11 @@ create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed,
 
     # compute the file that ran
     file_ran <- getOption("genthat.current_file")
-    get_last_slash <- regexpr("/[^/]*$", file_ran)
+    file_ran <- unlist(strsplit(file_ran, split="/"))
+    file_ran <- paste(file_ran[length(file_ran)-1], file_ran[length(file_ran)], sep="/")
+    # get_last_slash <- regexpr("/[^/]*$", file_ran)
     # get_last_slash[1] has location of last slash, +1 skips slash
-    file_ran <- substr(file_ran, get_last_slash[1]+1, nchar(file_ran))
+    # file_ran <- substr(file_ran, get_last_slash[1]+1, nchar(file_ran))
 
     trace <- list( fun=fun,
                    pkg=pkg,

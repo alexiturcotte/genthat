@@ -68,11 +68,11 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
 
         # A: Below, GENTHAT_CURRENT_FILE is (hopefully) the global variable with the currently
         #    running example. This should be threaded through to the tracer here.
-        create_trace(name, pkg, args=args, globals=globals, retv=retv, seed=seed, error=error, current_file=names(env))#$GENTHAT_CURRENT_FILE)
+        create_trace(name, pkg, args=args, globals=globals, retv=retv, seed=seed, error=error)
     }, error=function(e) {
-        create_trace(name, pkg, args=args, failure=e, current_file=names(env))#$GENTHAT_CURRENT_FILE)
+        create_trace(name, pkg, args=args, failure=e)
     }, warning=function(e) {
-        create_trace(name, pkg, args=args, failure=e, current_file=names(env))#$GENTHAT_CURRENT_FILE)
+        create_trace(name, pkg, args=args, failure=e)
     })
 
     store_trace(tracer, trace)

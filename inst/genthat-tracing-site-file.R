@@ -10,6 +10,10 @@ options(genthat.keep_failed_traces=as.logical(Sys.getenv("GENTHAT_KEEP_FAILED_TR
 options(genthat.keep_all_traces=as.logical(Sys.getenv("GENTHAT_KEEP_ALL_TRACES", "FALSE")))
 options(genthat.max_trace_size=as.integer(Sys.getenv("GENTHAT_MAX_TRACE_SIZE")))
 options(genthat.current_file=Sys.getenv("GENTHAT_CURRENT_FILE"))
+options(genthat.counts_file=Sys.getenv("GENTHAT_COUNTS_FILE"))
+options(genthat.output_dir=Sys.getenv("GENTHAT_OUTPUT_DIR"))
+
+print(paste0("OUTPUT DIR::: ", getOption("genthat.output_dir")))
 
 genthat::set_decorator(genthat::create_decorator(Sys.getenv("GENTHAT_DECORATOR")))
 
@@ -43,11 +47,13 @@ reg.finalizer(
     f=function(x) {
         genthat::disable_tracing()
 
-        ret <- genthat::process_traces(
-            traces=genthat::copy_traces(genthat::get_tracer()),
-            output_dir=Sys.getenv("GENTHAT_OUTPUT_DIR"),
-            action=Sys.getenv("GENTHAT_ACTION")
-        )
+        # ostensibly done as the tracer is running now...
+        # uncomment if needed
+        # ret <- genthat::process_traces(
+        #     traces=genthat::copy_traces(genthat::get_tracer()),
+        #     output_dir=Sys.getenv("GENTHAT_OUTPUT_DIR"),
+        #     action=Sys.getenv("GENTHAT_ACTION")
+        # )
 
         stats_file <- Sys.getenv("GENTHAT_STATS_FILE")
 
@@ -55,14 +61,15 @@ reg.finalizer(
         # of R in which case we want to keep all the traces together
         stats_file_exists <- file.exists(stats_file)
 
-        write.table(
-            ret,
-            file=stats_file,
-            row.names=FALSE,
-            col.names=!stats_file_exists,
-            append=stats_file_exists,
-            qmethod="double",
-            sep=","
-        )
+        # See above ostensibly comment
+        # write.table(
+        #     ret,
+        #     file=stats_file,
+        #     row.names=FALSE,
+        #     col.names=!stats_file_exists,
+        #     append=stats_file_exists,
+        #     qmethod="double",
+        #     sep=","
+        # )
     }
 )

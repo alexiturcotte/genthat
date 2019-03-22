@@ -132,8 +132,7 @@ create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed,
                    arg_types=arg_types,
                    arg_attrs=arg_attrs,
                    arg_classes=arg_classes,
-                   file_ran=file_ran,
-                   times_seen=1)
+                   file_ran=file_ran)
 
     if (!missing(retv)) {
         # trace$retv <- retv

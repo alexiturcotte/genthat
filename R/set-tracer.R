@@ -60,14 +60,33 @@ store_trace.set_tracer <- function(tracer, trace) {
     if (is_new) {
         where <- toString(length(tracer$traces) + 1)
         assign(where, TRUE, envir=tracer$known_traces)
+        trace$hash <- hashed_sig
         tracer$traces[[where]] <- trace
 
+        # process_traces(
+        #     traces=list(trace), # stoopid hack
+        #     output_dir=getOption("genthat.output_dir"),
+        #     action="export"
+        # )
+        save_trace_file(trace, getOption("genthat.output_dir"), "trace")
+
         # make sure to save hash in case we see it later
-        tracer$hash_to_loc_map[[hashed_sig]] <- where
+        # tracer$hash_to_loc_map[[hashed_sig]] <- where
+        # TODO: Also write the trace out????
+        # log_debug("Counts file: ", getOption("genthat.counts_file"))
+        # log_debug("getwd(): ", getwd())
+        count_file <- readRDS(getOption("genthat.counts_file"))
+        count_file[[trace$pkg]][paste(trace$fun, hashed_sig, sep="-")] <- 1
+        saveRDS(count_file, getOption("genthat.counts_file"))
     } else {
     #     # update trace entry with new count
-        tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen <-
-        tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen + 1
+        count_file <- readRDS(getOption("genthat.counts_file"))
+        subindex <- paste(trace$fun, hashed_sig, sep="-")
+        count_file[[trace$pkg]][subindex] <- count_file[[trace$pkg]][subindex] + 1
+        saveRDS(count_file, getOption("genthat.counts_file"))
+
+        # tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen <-
+        # tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen + 1
     }
 
     invisible(trace)

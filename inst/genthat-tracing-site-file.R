@@ -13,8 +13,6 @@ options(genthat.current_file=Sys.getenv("GENTHAT_CURRENT_FILE"))
 options(genthat.counts_file=Sys.getenv("GENTHAT_COUNTS_FILE"))
 options(genthat.output_dir=Sys.getenv("GENTHAT_OUTPUT_DIR"))
 
-print(paste0("OUTPUT DIR::: ", getOption("genthat.output_dir")))
-
 genthat::set_decorator(genthat::create_decorator(Sys.getenv("GENTHAT_DECORATOR")))
 
 if (Sys.getenv("GENTHAT_TRACER") == "set") {

@@ -298,7 +298,7 @@ trace_package <- function(pkgs, files_to_run,
     times <- new.env(parent=emptyenv()) # for timing
 
     run_file <- function(fname) {
-        log_debug("Running ", fname, " ...")
+        log_debug("[[[Running ", fname, " ...]]]")
 
         env <- c()
         site_file <- NULL

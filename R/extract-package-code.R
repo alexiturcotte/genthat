@@ -99,7 +99,8 @@ extract_package_tests <- function(pkg, pkg_dir, output_dir) {
     files <- Sys.glob(file.path(test_dir, "*"))
     file.copy(files, output_dir, recursive=TRUE)
 
-    tests <- file.path(output_dir, basename(files))
+    # tests <- file.path(output_dir, basename(files))
+    tests <- list.files(output_dir, full.names=T, recursive=T)
     tests <- tests[!dir.exists(tests)]
     tests <- tests[grepl("\\.R$", tests)]
 

@@ -77,7 +77,8 @@ gen_from_package <- function(pkgs_to_trace, pkgs_to_run=pkgs_to_trace,
 
     # TODO: create a stats file with counts?
     options("genthat.counts_file" = paste0(getwd(), "/genthat_counts/", pkgs_to_run[1], ".RDS"))
-    saveRDS(list(), getOption("genthat.counts_file"))
+    if (!file.exists(getOption("genthat.counts_file")))
+      saveRDS(list(), getOption("genthat.counts_file"))
 
     if (length(files) == 0) {
         return(data.frame(file=character(), output=character(),  error=character()))

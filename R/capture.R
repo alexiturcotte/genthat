@@ -55,21 +55,20 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
         # globals <- as.list(environment(extract_closure(callee)), all.names=TRUE)
         # globals <- lapply(globals, duplicate_global_var)
         special_eval <- function(x) {
-          tryCatch({
-            # check if X is promise
-            pinfo <- promise_info(x)
-            if(! pinfo$evaled) {
-              r <- list()
-              attr(r, "typeR::unevaled") <- T   # catch this
-              r
-            } else {
-              eval(x, env)
-            }},
+          # check if X is promise
+          pinfo <- pryr::promise_info(x)
+          if(! pinfo$evaled) {
+            r <- list()
+            attr(r, "typeR::unevaled") <- T   # catch this
+            r
+          } else {
+            tryCatch({ eval(x, env) },
               error = function(e) {
                 r <- list()
                 attr(r, "typeR::did_it_work") <- FALSE
                 r
               }
+            }
           )
         }
         args <- lapply(as.list(args), special_eval)
@@ -86,6 +85,25 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
 
     store_trace(tracer, trace)
 }
+
+# special_eval <- function(x) {
+#   tryCatch({
+#     # check if X is promise
+#     pinfo <- pryr::promise_info(x)
+#     if(! pinfo$evaled) {
+#       r <- list()
+#       attr(r, "typeR::unevaled") <- T   # catch this
+#       r
+#     } else {
+#       eval(x, env)
+#     }},
+#       error = function(e) {
+#         r <- list()
+#         attr(r, "typeR::did_it_work") <- FALSE
+#         r
+#       }
+#   )
+# }
 
 duplicate_global_var <- function(x) {
     if (is.null(x)) {

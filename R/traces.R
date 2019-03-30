@@ -123,7 +123,7 @@ create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed,
 
     #
     # # ... arg_classes:
-    arg_classes <- lapply(args, class)
+    arg_classes <- lapply(args, get_class)
 
     # compute the file that ran
     file_ran <- getOption("genthat.current_file")

@@ -68,8 +68,8 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
                 attr(r, "typeR::did_it_work") <- FALSE
                 r
               }
-            }
-          )
+            )
+          }
         }
         args <- lapply(as.list(args), special_eval)
         retv <- special_eval(retv)

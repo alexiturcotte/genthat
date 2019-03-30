@@ -56,11 +56,21 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
         # globals <- lapply(globals, duplicate_global_var)
         special_eval <- function(x) {
           # check if X is promise
-          pinfo <- pryr::promise_info(x)
-          if(! pinfo$evaled) {
-            r <- list()
-            attr(r, "typeR::unevaled") <- T   # catch this
-            r
+          if (pryr::is_promise(x)) {
+            pinfo <- pryr::promise_info(x)
+            if(! pinfo$evaled) {
+              r <- list()
+              attr(r, "typeR::unevaled") <- T   # catch this
+              r
+            } else {
+              tryCatch({ eval(x, env) },
+                error = function(e) {
+                  r <- list()
+                  attr(r, "typeR::did_it_work") <- FALSE
+                  r
+                }
+              )
+            }
           } else {
             tryCatch({ eval(x, env) },
               error = function(e) {

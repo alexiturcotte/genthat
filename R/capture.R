@@ -55,7 +55,7 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
         # globals <- as.list(environment(extract_closure(callee)), all.names=TRUE)
         # globals <- lapply(globals, duplicate_global_var)
         special_eval <- function(x) {
-          tryCatch(
+          tryCatch({
             # check if X is promise
             pinfo <- promise_info(x)
             if(! pinfo$evaled) {
@@ -63,13 +63,14 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
               attr(r, "typeR::unevaled") <- T   # catch this
               r
             } else {
-              eval(x, env),
+              eval(x, env)
+            }},
               error = function(e) {
                 r <- list()
                 attr(r, "typeR::did_it_work") <- FALSE
                 r
               }
-          })
+          )
         }
         args <- lapply(as.list(args), special_eval)
         retv <- special_eval(retv)

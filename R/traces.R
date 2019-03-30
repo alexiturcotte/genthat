@@ -5,6 +5,8 @@ get_attrs <- function(v) {
   # before we start, make sure we're not dealing with an error
   if (!is.null(attr(v, "typeR::did_it_work")))
     "error"
+  else if (!is.null(attr(v, "typeR::unevaled")))
+    "unevaled"
   else {
     # first, get the attributes
     the_attrs <- attributes(v)
@@ -35,6 +37,8 @@ get_type <- function(v) {
 
   if (!is.null(attr(v, "typeR::did_it_work")))
     "error"
+  else if (!is.null(attr(v, "typeR::unevaled")))
+    "unevaled"
   else {
 
     r_t <- tryCatch(
@@ -79,6 +83,8 @@ get_type <- function(v) {
 get_class <- function(v) {
   if (!is.null(attr(v, "typeR::did_it_work")))
     "error"
+  if (!is.null(attr(v, "typeR::unevaled")))
+    "unevaled"
   else {
     class(v)
   }

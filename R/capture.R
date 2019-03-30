@@ -56,11 +56,19 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
         # globals <- lapply(globals, duplicate_global_var)
         special_eval <- function(x) {
           tryCatch(
-            eval(x, env),
-            error = function(e) {
+            # check if X is promise
+            pinfo <- promise_info(x)
+            if(! pinfo$evaled) {
               r <- list()
-              attr(r, "typeR::did_it_work") <- FALSE
+              attr(r, "typeR::unevaled") <- T   # catch this
               r
+            } else {
+              eval(x, env),
+              error = function(e) {
+                r <- list()
+                attr(r, "typeR::did_it_work") <- FALSE
+                r
+              }
           })
         }
         args <- lapply(as.list(args), special_eval)

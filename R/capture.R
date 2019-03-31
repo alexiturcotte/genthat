@@ -1,8 +1,3 @@
-#' @export
-check_if_promise <- function(x) {
-  is_promise2(x, parent.frame())
-}
-
 # Default function entry decorator.
 # Creates the trace record and stores it into the trace vector.
 record_trace <- function(name, pkg=NULL, args, retv, error, seed,

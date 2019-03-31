@@ -57,7 +57,3 @@ environment_name_as_code <- function(env) {
     .Call('_genthat_environment_name_as_code', PACKAGE = 'genthat', env)
 }
 
-is_promise2 <- function(name, env) {
-    .Call('_genthat_is_promise2', PACKAGE = 'genthat', name, env)
-}
-

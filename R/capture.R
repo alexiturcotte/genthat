@@ -23,7 +23,7 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     # }
     #
     for (n in names(args)) {
-      pinfo <- eval(substitute(pryr::promise_info(n)))
+      pinfo <- eval(substitute(pryr::promise_info(n)), env)
       if (pinfo$evaled) {
         # ok
         args_evaled[[n]] <- args[[n]]
@@ -34,7 +34,7 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     }
     #
     # log_debug("args:", args)
-    log_debug("args_not_evaled: ", args_not_evaled)
+    log_debug("args_not_evaled: ", names(args_not_evaled))
 
     trace <- tryCatch({
         ddsym <- as.character(filter(args, is_ddsym))

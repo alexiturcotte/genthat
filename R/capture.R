@@ -23,13 +23,17 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     # }
     #
     for (n in names(args)) {
-      pinfo <- eval(substitute(pryr::promise_info(n)), env)
-      if (pinfo$evaled) {
-        # ok
-        args_evaled[[n]] <- args[[n]]
+      if (eval(substitute(pryr::is_promise(n)), env)) {
+        pinfo <- eval(substitute(pryr::promise_info(n)), env)
+        if (pinfo$evaled) {
+          # ok
+          args_evaled[[n]] <- args[[n]]
+        } else {
+          # not ok
+          args_not_evaled[[n]] <- "typeR::promise_not_evaled"
+        }
       } else {
-        # not ok
-        args_not_evaled[[n]] <- "typeR::promise_not_evaled"
+        args_evaled[[n]] <- args[[n]]
       }
     }
     #

@@ -8,6 +8,33 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     # we do that by abusing the extract closure
     # TODO: will this help us with promises?
 
+    # first, get all unevaluated args!
+    # args_evaled <- list()
+    # args_not_evaled <- list()
+    #
+    # typeR_iter <- 1
+    # typeR_numdots <- 1
+    # for (n in names(args)) {
+    #   if (n == "") {
+    #     names(args)[typeR_iter] <- paste0("..", typeR_numdots)
+    #     typeR_numdots <- typeR_numdots + 1
+    #   }
+    #   typeR_iter <- typeR_iter + 1
+    # }
+    #
+    # for (n in names(args)) {
+    #   pinfo <- eval(substitute(promise_info(n)))
+    #   if (pinfo$evaled) {
+    #     # ok
+    #     args_evaled[[n]] <- args[[n]]
+    #   } else {
+    #     # not ok
+    #     args_not_evaled[[n]] <- "typeR::promise_not_evaled"
+    #   }
+    # }
+
+    log_debug("args:", args)
+
     trace <- tryCatch({
         ddsym <- as.character(filter(args, is_ddsym))
         if (length(ddsym) > 0) {
@@ -58,7 +85,7 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
               attr(r, "typeR::unevaled") <- T   # catch this
               r
             } else {
-              tryCatch({ eval(x, env) },
+              tryCatch({ eval(pinfo$value, env) },  #  eval(x, env)
                 error = function(e) {
                   r <- list()
                   attr(r, "typeR::promise_did_it_work") <- FALSE

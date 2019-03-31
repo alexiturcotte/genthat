@@ -33,6 +33,10 @@ escape_name <- function(name) {
     .Call('_genthat_escape_name', PACKAGE = 'genthat', name)
 }
 
+is_promise2 <- function(name, env) {
+    .Call('_genthat_is_promise2', PACKAGE = 'genthat', name, env)
+}
+
 is_interesting <- function(pkg_name, fun_name, arg_len, arg_names, arg_types, arg_attrs, arg_classes) {
     .Call('_genthat_is_interesting', PACKAGE = 'genthat', pkg_name, fun_name, arg_len, arg_names, arg_types, arg_attrs, arg_classes)
 }

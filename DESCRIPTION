@@ -24,6 +24,7 @@ Imports:
     magrittr,
     methods,
     Rcpp (>= 0.11.3),
+    pryr,
     testthat,
     tools,
     utils,
@@ -36,6 +37,6 @@ Suggests:
     readr,
     roxygen2 (>= 5.0.0)
 LazyData: TRUE
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 VignetteBuilder: knitr
 SystemRequirements: C++11

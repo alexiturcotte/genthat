@@ -7,3 +7,6 @@
 \usage{
 store_trace(tracer, trace)
 }
+\description{
+Stores given trace to the tracer
+}

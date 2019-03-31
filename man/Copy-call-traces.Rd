@@ -7,3 +7,6 @@
 \usage{
 copy_traces(tracer)
 }
+\description{
+Creates a copy of traces captured so far and returns them as R list.
+}

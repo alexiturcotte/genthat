@@ -4,10 +4,10 @@
 \alias{trace_package}
 \title{Decorate all functions from given package and runs package code}
 \usage{
-trace_package(pkgs, files_to_run, output_dir = ".", decorator = "on.exit",
-  tracer = "set", action = c("stats", "export", "generate"),
-  working_dir = tempfile(pattern = "genthat-trace-"), quiet = TRUE,
-  lib_paths = NULL)
+trace_package(pkgs, files_to_run, output_dir = ".",
+  decorator = "on.exit", tracer = "set", action = c("stats",
+  "export", "generate"), working_dir = tempfile(pattern =
+  "genthat-trace-"), quiet = TRUE, lib_paths = NULL)
 }
 \arguments{
 \item{output_dir}{the name of the directory where to output traces or NULL if traces should not be saved}

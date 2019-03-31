@@ -4,7 +4,8 @@
 \alias{get_package_version}
 \title{Gets the latest package version}
 \usage{
-get_package_version(package, repos = getOption("repos"), type = "source")
+get_package_version(package, repos = getOption("repos"),
+  type = "source")
 }
 \description{
 Returns the latest version of a given package that is available in the given repository.

@@ -7,3 +7,6 @@
 \usage{
 reset_traces(tracer)
 }
+\description{
+Clears the captured traces
+}

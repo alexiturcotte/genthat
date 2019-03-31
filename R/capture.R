@@ -38,7 +38,7 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     }
     #
     # log_debug("args:", args)
-    log_debug("args_not_evaled: ", names(args_not_evaled))
+    log_debug("num args_not_evaled: ", length(args_not_evaled))
 
     trace <- tryCatch({
         ddsym <- as.character(filter(args, is_ddsym))

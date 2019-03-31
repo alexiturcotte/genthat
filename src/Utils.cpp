@@ -13,13 +13,6 @@ std::map<size_t, bool> seenSigs;
 // this is the str version of the std hash function
 std::hash<std::string> str_hash;
 
-// [[Rcpp::export]]
-bool is_promise2(Symbol name, Environment env) {
-  SEXP object = Rf_findVar(name, env);
-
-  return (TYPEOF (object) == PROMSXP);
-}
-
 std::string make_into_string(SEXP s) {
   return CHAR(STRING_ELT(s, 0));
 }

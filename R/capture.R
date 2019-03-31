@@ -1,3 +1,8 @@
+#' @export
+check_if_promise <- function(x) {
+  is_promise2(x, parent.frame())
+}
+
 # Default function entry decorator.
 # Creates the trace record and stores it into the trace vector.
 record_trace <- function(name, pkg=NULL, args, retv, error, seed,
@@ -49,11 +54,6 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
             }
         }
 
-        # A: apparently, these lines are very expensive. Is there a way to capture
-        #    just the type information instead, at an earlier point?
-        # callee <- as.function(c(alist(), as.call(c(quote(`{`), args))), envir=env)
-        # globals <- as.list(environment(extract_closure(callee)), all.names=TRUE)
-        # globals <- lapply(globals, duplicate_global_var)
         special_eval <- function(x) {
           # check if X is promise
           if (pryr::is_promise(x)) {
@@ -81,6 +81,10 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
             )
           }
         }
+
+        # force retv?
+        retv
+
         args <- lapply(as.list(args), special_eval)
         retv <- special_eval(retv)
 

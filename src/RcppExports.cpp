@@ -93,18 +93,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// is_promise2
-bool is_promise2(Symbol name, Environment env);
-RcppExport SEXP _genthat_is_promise2(SEXP nameSEXP, SEXP envSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Symbol >::type name(nameSEXP);
-    Rcpp::traits::input_parameter< Environment >::type env(envSEXP);
-    rcpp_result_gen = Rcpp::wrap(is_promise2(name, env));
-    return rcpp_result_gen;
-END_RCPP
-}
 // is_interesting
 std::string is_interesting(std::string pkg_name, std::string fun_name, int arg_len, SEXP arg_names, SEXP arg_types, SEXP arg_attrs, SEXP arg_classes);
 RcppExport SEXP _genthat_is_interesting(SEXP pkg_nameSEXP, SEXP fun_nameSEXP, SEXP arg_lenSEXP, SEXP arg_namesSEXP, SEXP arg_typesSEXP, SEXP arg_attrsSEXP, SEXP arg_classesSEXP) {
@@ -181,6 +169,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// is_promise2
+bool is_promise2(Rcpp::Symbol name, Rcpp::Environment env);
+RcppExport SEXP _genthat_is_promise2(SEXP nameSEXP, SEXP envSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::Symbol >::type name(nameSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Environment >::type env(envSEXP);
+    rcpp_result_gen = Rcpp::wrap(is_promise2(name, env));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_SerializerModule();
 
@@ -193,13 +193,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_genthat_is_infix_fun_no_space", (DL_FUNC) &_genthat_is_infix_fun_no_space, 1},
     {"_genthat_is_infix_fun", (DL_FUNC) &_genthat_is_infix_fun, 1},
     {"_genthat_escape_name", (DL_FUNC) &_genthat_escape_name, 1},
-    {"_genthat_is_promise2", (DL_FUNC) &_genthat_is_promise2, 2},
     {"_genthat_is_interesting", (DL_FUNC) &_genthat_is_interesting, 7},
     {"_genthat_get_dd_val", (DL_FUNC) &_genthat_get_dd_val, 4},
     {"_genthat_reassign_function", (DL_FUNC) &_genthat_reassign_function, 2},
     {"_genthat_create_duplicate", (DL_FUNC) &_genthat_create_duplicate, 1},
     {"_genthat_environment_name", (DL_FUNC) &_genthat_environment_name, 1},
     {"_genthat_environment_name_as_code", (DL_FUNC) &_genthat_environment_name_as_code, 1},
+    {"_genthat_is_promise2", (DL_FUNC) &_genthat_is_promise2, 2},
     {"_rcpp_module_boot_SerializerModule", (DL_FUNC) &_rcpp_module_boot_SerializerModule, 0},
     {NULL, NULL, 0}
 };

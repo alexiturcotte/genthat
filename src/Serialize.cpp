@@ -1,5 +1,5 @@
-#include <Rcpp.h>
 #include <R.h>
+#include <Rcpp.h>
 
 #include <string>
 

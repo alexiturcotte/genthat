@@ -22,7 +22,7 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     #   typeR_iter <- typeR_iter + 1
     # }
     #
-    for (n in names(args)) {
+    for (n in args) {
       if (eval(substitute(pryr::is_promise(n)), env)) {
         pinfo <- eval(substitute(pryr::promise_info(n)), env)
         if (pinfo$evaled) {

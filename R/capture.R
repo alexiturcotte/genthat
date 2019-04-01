@@ -9,8 +9,8 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     # TODO: will this help us with promises?
 
     # first, get all unevaluated args!
-    args_evaled <- list()
-    args_not_evaled <- list()
+    # args_evaled <- list()
+    # args_not_evaled <- list()
     #
     # typeR_iter <- 1
     # typeR_numdots <- 1
@@ -22,23 +22,23 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     #   typeR_iter <- typeR_iter + 1
     # }
     #
-    for (n in args) {
-      if (eval(substitute(pryr::is_promise(n)))) {
-        pinfo <- eval(substitute(pryr::promise_info(n)))
-        if (pinfo$evaled) {
-          # ok
-          args_evaled[[n]] <- args[[n]]
-        } else {
-          # not ok
-          args_not_evaled[[n]] <- "typeR::promise_not_evaled"
-        }
-      } else {
-        args_evaled[[n]] <- args[[n]]
-      }
-    }
-    #
-    # log_debug("args:", args)
-    log_debug("num args_not_evaled: ", length(args_not_evaled))
+    # for (n in args) {
+    #   if (eval(substitute(pryr::is_promise(n)))) {
+    #     pinfo <- eval(substitute(pryr::promise_info(n)))
+    #     if (pinfo$evaled) {
+    #       # ok
+    #       args_evaled[[n]] <- args[[n]]
+    #     } else {
+    #       # not ok
+    #       args_not_evaled[[n]] <- "typeR::promise_not_evaled"
+    #     }
+    #   } else {
+    #     args_evaled[[n]] <- args[[n]]
+    #   }
+    # }
+    # #
+    # # log_debug("args:", args)
+    # log_debug("num args_not_evaled: ", length(args_not_evaled))
 
     trace <- tryCatch({
         ddsym <- as.character(filter(args, is_ddsym))

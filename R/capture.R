@@ -23,8 +23,8 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     # }
     #
     for (n in args) {
-      if (eval(substitute(pryr::is_promise(n)), env)) {
-        pinfo <- eval(substitute(pryr::promise_info(n)), env)
+      if (eval(substitute(pryr::is_promise(n)), parent.frame())) {
+        pinfo <- eval(substitute(pryr::promise_info(n)), parent.frame())
         if (pinfo$evaled) {
           # ok
           args_evaled[[n]] <- args[[n]]

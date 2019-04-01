@@ -40,6 +40,24 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
     # # log_debug("args:", args)
     # log_debug("num args_not_evaled: ", length(args_not_evaled))
 
+    evaled_args <- list()
+    not_evaled_args <- list()
+
+    for (n in names(args)) {
+      if (eval(substitute(pryr::is_promise(n)))) {
+        pinfo <- eval(substitute(pryr::promise_info(n)))
+        if (pinfo$evaled) {
+          evaled_args[[n]] <- args[[n]]
+        } else {
+          not_evaled_args[[n]] <- "typeR::not_evaled"
+        }
+      } else {
+        evaled_args[[n]] <- args[[n]]
+      }
+    }
+
+    args <- c(evaled_args, not_evaled_args)
+
     trace <- tryCatch({
         ddsym <- as.character(filter(args, is_ddsym))
         if (length(ddsym) > 0) {
@@ -82,31 +100,13 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
         }
 
         special_eval <- function(x) {
-          # check if X is promise
-          if (pryr::is_promise(x)) {
-            pinfo <- pryr::promise_info(x)
-            if(! pinfo$evaled) {
-              r <- list()
-              attr(r, "typeR::unevaled") <- T   # catch this
-              r
-            } else {
-              tryCatch({ eval(pinfo$value, env) },  #  eval(x, env)
-                error = function(e) {
-                  r <- list()
-                  attr(r, "typeR::promise_did_it_work") <- FALSE
-                  r
-                }
-              )
-            }
-          } else {
-            tryCatch({ eval(x, env) },
-              error = function(e) {
-                r <- list()
-                attr(r, "typeR::did_it_work") <- FALSE
-                r
-              }
-            )
-          }
+          tryCatch({
+            eval(x, env)
+          }, error = function(e) {
+            r <- list()
+            attr(r, "typeR::did_it_work") <- FALSE
+            r
+          })
         }
 
         # force retv?
@@ -126,35 +126,6 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
 
     store_trace(tracer, trace)
 }
-
-# old
-# special_eval <- function(x) {
-#   # check if X is promise
-#   if (pryr::is_promise(x)) {
-#     pinfo <- pryr::promise_info(x)
-#     if(! pinfo$evaled) {
-#       r <- list()
-#       attr(r, "typeR::unevaled") <- T   # catch this
-#       r
-#     } else {
-#       tryCatch({ eval(x, env) },
-#         error = function(e) {
-#           r <- list()
-#           attr(r, "typeR::did_it_work") <- FALSE
-#           r
-#         }
-#       )
-#     }
-#   } else {
-#     tryCatch({ eval(x, env) },
-#       error = function(e) {
-#         r <- list()
-#         attr(r, "typeR::did_it_work") <- FALSE
-#         r
-#       }
-#     )
-#   }
-# }
 
 duplicate_global_var <- function(x) {
     if (is.null(x)) {

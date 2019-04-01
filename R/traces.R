@@ -5,9 +5,7 @@ get_attrs <- function(v) {
   # before we start, make sure we're not dealing with an error
   if (!is.null(attr(v, "typeR::did_it_work")))
     "error"
-  else if (!is.null(attr(v, "typeR::promise_did_it_work")))
-    "promise_error"
-  else if (!is.null(attr(v, "typeR::unevaled")))
+  else if (identical(v, "typeR::not_evaled"))
     "unevaled"
   else {
     # first, get the attributes
@@ -39,9 +37,7 @@ get_type <- function(v) {
 
   if (!is.null(attr(v, "typeR::did_it_work")))
     "error"
-  else if (!is.null(attr(v, "typeR::promise_did_it_work")))
-    "promise_error"
-  else if (!is.null(attr(v, "typeR::unevaled")))
+  else if (identical(v, "typeR::not_evaled"))
     "unevaled"
   else {
 
@@ -87,9 +83,7 @@ get_type <- function(v) {
 get_class <- function(v) {
   if (!is.null(attr(v, "typeR::did_it_work")))
     "error"
-  else if (!is.null(attr(v, "typeR::promise_did_it_work")))
-    "promise_error"
-  if (!is.null(attr(v, "typeR::unevaled")))
+  else if (identical(v, "typeR::not_evaled"))
     "unevaled"
   else {
     class(v)

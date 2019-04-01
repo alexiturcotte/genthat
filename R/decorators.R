@@ -198,6 +198,7 @@ decorate_with_on.exit <- function(fun, name, pkg, record_fun) {
                     .Internal(options(genthat.tracing=FALSE))
                     default <- genthat:::`__genthat_default_retv`
                     retv <- returnValue(default=default)
+
                     if (!identical(retv, default) && !genthat:::is_exception_returnValue(retv)) {
                         RECORD_FUN(
                             name=NAME,

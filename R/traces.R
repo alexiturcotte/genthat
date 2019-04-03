@@ -9,6 +9,8 @@ get_attrs <- function(v) {
     "unevaled"
   else if (identical(v, "typeR::missing"))
     "missing"
+  else if (identical(v, "typeR::NULL_val"))
+    "NULL"
   else {
     # first, get the attributes
     the_attrs <- attributes(v)
@@ -43,6 +45,8 @@ get_type <- function(v) {
     "unevaled"
   else if (identical(v, "typeR::missing"))
     "missing"
+  else if (identical(v, "typeR::NULL_val"))
+    "NULL"
   else {
 
     r_t <- tryCatch(
@@ -95,6 +99,8 @@ get_class <- function(v) {
     "unevaled"
   else if (identical(v, "typeR::missing"))
     "missing"
+  else if (identical(v, "typeR::NULL_val"))
+    "NULL"
   else {
     class(v)
   }

@@ -83,6 +83,8 @@ record_trace <- function(name, pkg=NULL, args, more_args, retv, error, seed,
             evaled_args[[typeR_n]] <- tryCatch({
               eval(parse(text = typeR_n), list2env(eval_in, parent=env))
             }, error = function(e) "typeR::missing")
+            if (is.null(evaled_args[[typeR_n]]))
+              evaled_args[[typeR_n]] <- "typeR::NULL_val"
           }
         }
       }

@@ -203,7 +203,9 @@ decorate_with_on.exit <- function(fun, name, pkg, record_fun) {
                         RECORD_FUN(
                             name=NAME,
                             pkg=PKG,
-                            args=as.list(match.call())[-1],
+                            # args=as.list(match.call())[-1],
+                            args=formals(NAME),
+                            more_args=as.list(match.call())[-1],
                             retv=retv,
                             seed=`__genthat_captured_seed`,
                             env=parent.frame()

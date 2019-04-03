@@ -1,6 +1,6 @@
 # Default function entry decorator.
 # Creates the trace record and stores it into the trace vector.
-record_trace <- function(name, pkg=NULL, args, retv, error, seed,
+record_trace <- function(name, pkg=NULL, args, more_args, retv, error, seed,
                         env=parent.frame(), tracer=get_tracer()) {
 
     # TODO: (performance) all this makes sense only if there are symbols anywhere in args
@@ -42,38 +42,78 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
 
     evaled_args <- list()
     not_evaled_args <- list()
+    typeR_has_dots <- FALSE
 
-    for (n in names(args)) {
-      if (nchar(n) > 0 && eval(substitute(pryr::is_promise(n)))) {
-        pinfo <- eval(substitute(pryr::promise_info(n)))
-        if (pinfo$evaled) {
-          evaled_args[[n]] <- args[[n]]
+    # build the right environment to do the lookup
+    names_to_check <- names(args)
+    names(names_to_check) <- names_to_check
+    if ("..." %in% names_to_check) {
+      names_to_check <- names_to_check[names_to_check != "..."]
+    }
+
+    eval_in <- lapply(names_to_check, function(n) {
+      if (n %in% names(more_args))
+        more_args[[n]]
+      else
+        args[[n]]
+    })
+
+    arg_names <- names(args)
+
+    if (length(arg_names) > 0) {
+      for (typeR_i in 1:length(arg_names)) {
+        typeR_n <- arg_names[typeR_i]
+        if (typeR_n == "...") {
+          # do something ...
+          typeR_has_dots <- TRUE
         } else {
-          not_evaled_args[[n]] <- "typeR::not_evaled"
+          if (eval(substitute(pryr::is_promise(typeR_n)))) {
+            pinfo <- eval(substitute(pryr::promise_info(typeR_n)))
+
+            if (pinfo$evaled) {
+              # it was evaluated, it's safe
+              # evaled_args[[typeR_n]] <- eval(parse(text = typeR_n), eval_in)
+              # log_debug("[", name, "], evaled/putting: ", pinfo$value)
+              evaled_args[[typeR_n]] <- pinfo$value
+            } else {
+              # log_debug("[", name, "], unevaled/")
+              not_evaled_args[[typeR_n]] <- "typeR::not_evaled"
+            }
+          } else {
+            evaled_args[[typeR_n]] <- eval(parse(text = typeR_n), eval_in)
+          }
         }
-      } else {
-        evaled_args[[n]] <- args[[n]]
       }
     }
 
+    # log_debug(paste0("[", name, "], size of evaled_args: ", length(evaled_args)))
+    # log_debug(paste0("[", name, "], size of not_evaled_args: ", length(not_evaled_args)))
+
     args <- c(evaled_args, not_evaled_args)
+    missing <- setdiff(names_to_check, names(args))
+    p <- rep("typeR::missing", length(missing))
+    names(p) <- missing
+    args <- c(args, p)
+    args <- args[sort(names(args))]
 
     trace <- tryCatch({
-        ddsym <- as.character(filter(args, is_ddsym))
-        if (length(ddsym) > 0) {
-            names(ddsym) <- ddsym
-            marker <- new.env(parent=emptyenv())
-
-            vals <- lapply(ddsym, get_ddsym_value, env=env, marker=marker)
-            args <- lapply(args, function(x) {
-                if (is_ddsym(x) && !identical(vals[[as.character(x)]], marker)) {
-                    # only replace the one which has been resolved
-                    vals[[as.character(x)]]
-                } else {
-                    x
-                }
-            })
-        }
+        # We are forgetting about this.
+        #
+        # ddsym <- as.character(filter(args, is_ddsym))
+        # if (length(ddsym) > 0) {
+        #     names(ddsym) <- ddsym
+        #     marker <- new.env(parent=emptyenv())
+        #
+        #     vals <- lapply(ddsym, get_ddsym_value, env=env, marker=marker)
+        #     args <- lapply(args, function(x) {
+        #         if (is_ddsym(x) && !identical(vals[[as.character(x)]], marker)) {
+        #             # only replace the one which has been resolved
+        #             vals[[as.character(x)]]
+        #         } else {
+        #             x
+        #         }
+        #     })
+        # }
 
         if (endsWith(name, "<-")) {
             # replacement function needs to be handle extra
@@ -104,20 +144,17 @@ record_trace <- function(name, pkg=NULL, args, retv, error, seed,
             eval(x, env)
           }, error = function(e) {
             r <- list()
-            attr(r, "typeR::did_it_work") <- FALSE
+            attr(r, "typeR::did_it_work") <- FALSE # this will catch missing arguments
             r
           })
         }
-
-        # force retv?
-        retv
 
         args <- lapply(as.list(args), special_eval)
         retv <- special_eval(retv)
 
         # A: Below, GENTHAT_CURRENT_FILE is (hopefully) the global variable with the currently
         #    running example. This should be threaded through to the tracer here.
-        create_trace(name, pkg, args=args, globals=globals, retv=retv, seed=seed, error=error)
+        create_trace(name, pkg, has_dots=typeR_has_dots, args=args, globals=globals, retv=retv, seed=seed, error=error)
     }, error=function(e) {
         create_trace(name, pkg, args=args, failure=e)
     }, warning=function(e) {

@@ -7,6 +7,8 @@ get_attrs <- function(v) {
     "error"
   else if (identical(v, "typeR::not_evaled"))
     "unevaled"
+  else if (identical(v, "typeR::missing"))
+    "missing"
   else {
     # first, get the attributes
     the_attrs <- attributes(v)
@@ -39,6 +41,8 @@ get_type <- function(v) {
     "error"
   else if (identical(v, "typeR::not_evaled"))
     "unevaled"
+  else if (identical(v, "typeR::missing"))
+    "missing"
   else {
 
     r_t <- tryCatch(
@@ -71,8 +75,12 @@ get_type <- function(v) {
         # scalar
         r_t <- paste("scalar", r_t, sep="/")
       } else {
-        # vector
-        r_t <- paste("vector", r_t, sep="/")
+        # vector?
+        if (is.matrix(v)) {
+          r_t <- paste("matrix", r_t, sep="/")
+        } else {
+          r_t <- paste("vector", r_t, sep="/")
+        }
       }
     }
     r_t
@@ -85,6 +93,8 @@ get_class <- function(v) {
     "error"
   else if (identical(v, "typeR::not_evaled"))
     "unevaled"
+  else if (identical(v, "typeR::missing"))
+    "missing"
   else {
     class(v)
   }
@@ -94,7 +104,7 @@ get_class <- function(v) {
 # typeR modification: change to record type information only in the trace
 # alexi / Feb 2019
 #
-create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed, error, failure, skipped=0) {
+create_trace <- function(fun, pkg=NULL, has_dots=F, args=list(), globals=list(), retv, seed, error, failure, skipped=0) {
     stopifnot(is.character(fun) && length(fun) == 1)
     stopifnot(is.null(pkg) || (is.character(pkg) && length(pkg) == 1))
     stopifnot(missing(retv) || missing(error) || missing(failure))
@@ -138,6 +148,7 @@ create_trace <- function(fun, pkg=NULL, args=list(), globals=list(), retv, seed,
                    arg_types=arg_types,
                    arg_attrs=arg_attrs,
                    arg_classes=arg_classes,
+                   has_dots=has_dots,       # for variadic
                    file_ran=file_ran)
 
     if (!missing(retv)) {

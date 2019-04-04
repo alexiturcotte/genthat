@@ -75,16 +75,14 @@ get_type <- function(v) {
     } # handle vectors
     else if (r_t %in% c("double", "integer", "logical", "complex", "character", "raw")) {
       # could be a vector
-      if (length(v) == 1) {
+      if (is.matrix(v)) {
+        r_t <- paste("matrix", r_t, sep="/")
+      } else if (length(v) == 1) {
         # scalar
         r_t <- paste("scalar", r_t, sep="/")
       } else {
         # vector?
-        if (is.matrix(v)) {
-          r_t <- paste("matrix", r_t, sep="/")
-        } else {
-          r_t <- paste("vector", r_t, sep="/")
-        }
+        r_t <- paste("vector", r_t, sep="/")
       }
     }
     r_t

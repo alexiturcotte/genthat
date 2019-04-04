@@ -10,7 +10,7 @@ options(genthat.keep_failed_traces=as.logical(Sys.getenv("GENTHAT_KEEP_FAILED_TR
 options(genthat.keep_all_traces=as.logical(Sys.getenv("GENTHAT_KEEP_ALL_TRACES", "FALSE")))
 options(genthat.max_trace_size=as.integer(Sys.getenv("GENTHAT_MAX_TRACE_SIZE")))
 options(genthat.current_file=Sys.getenv("GENTHAT_CURRENT_FILE"))
-options(genthat.counts_file=Sys.getenv("GENTHAT_COUNTS_FILE"))
+# options(genthat.counts_file=Sys.getenv("GENTHAT_COUNTS_FILE"))
 options(genthat.output_dir=Sys.getenv("GENTHAT_OUTPUT_DIR"))
 
 genthat::set_decorator(genthat::create_decorator(Sys.getenv("GENTHAT_DECORATOR")))

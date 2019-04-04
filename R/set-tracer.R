@@ -75,15 +75,15 @@ store_trace.set_tracer <- function(tracer, trace) {
         # TODO: Also write the trace out????
         # log_debug("Counts file: ", getOption("genthat.counts_file"))
         # log_debug("getwd(): ", getwd())
-        count_file <- readRDS(getOption("genthat.counts_file"))
-        count_file[[trace$pkg]][paste(trace$fun, hashed_sig, sep="-")] <- 1
-        saveRDS(count_file, getOption("genthat.counts_file"))
+        # count_file <- readRDS(getOption("genthat.counts_file"))
+        # count_file[[trace$pkg]][paste(trace$fun, hashed_sig, sep="-")] <- 1
+        # saveRDS(count_file, getOption("genthat.counts_file"))
     } else {
     #     # update trace entry with new count
-        count_file <- readRDS(getOption("genthat.counts_file"))
-        subindex <- paste(trace$fun, hashed_sig, sep="-")
-        count_file[[trace$pkg]][subindex] <- count_file[[trace$pkg]][subindex] + 1
-        saveRDS(count_file, getOption("genthat.counts_file"))
+        # count_file <- readRDS(getOption("genthat.counts_file"))
+        # subindex <- paste(trace$fun, hashed_sig, sep="-")
+        # count_file[[trace$pkg]][subindex] <- count_file[[trace$pkg]][subindex] + 1
+        # saveRDS(count_file, getOption("genthat.counts_file"))
 
         # tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen <-
         # tracer$traces[[tracer$hash_to_loc_map[[hashed_sig]]]]$times_seen + 1

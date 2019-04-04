@@ -76,9 +76,9 @@ gen_from_package <- function(pkgs_to_trace, pkgs_to_run=pkgs_to_trace,
     files <- unlist(files)
 
     # TODO: create a stats file with counts?
-    options("genthat.counts_file" = paste0(getwd(), "/genthat_counts/", pkgs_to_run[1], ".RDS"))
-    if (!file.exists(getOption("genthat.counts_file")))
-      saveRDS(list(), getOption("genthat.counts_file"))
+    # options("genthat.counts_file" = paste0(getwd(), "/genthat_counts/", pkgs_to_run[1], ".RDS"))
+    # if (!file.exists(getOption("genthat.counts_file")))
+    #   saveRDS(list(), getOption("genthat.counts_file"))
 
     if (length(files) == 0) {
         return(data.frame(file=character(), output=character(),  error=character()))
@@ -323,7 +323,7 @@ trace_package <- function(pkgs, files_to_run,
             vars$session_file <- set_tracer_session_file
             vars$action <- action
             vars$current_file <- fname
-            vars$counts_file <- getOption("genthat.counts_file")
+            # vars$counts_file <- getOption("genthat.counts_file")
             vars$output_dir <- output_dir
             vars$stats_file <- stats_file
             vars$max_trace_size <- getOption("genthat.max_trace_size", .Machine$integer.max)

@@ -116,9 +116,10 @@ decorate_function <- function(fun, name=substitute(fun),
         stop(fqn, ": is not a function")
     }
 
-    if (is.primitive(fun)) {
-        stop(fqn, ": is a primitive function")
-    }
+    # maybe let primitive functions go through?
+    # if (is.primitive(fun)) {
+    #     stop(fqn, ": is a primitive function")
+    # }
 
     if (is_s3_generic(fun)) {
         stop(fqn, ": is a S3 generic function")

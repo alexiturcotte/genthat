@@ -112,6 +112,12 @@ split_function_name <- function(name) {
 }
 
 create_function <- function(params, body, env=parent.frame(), attributes=list()) {
+
+    # this ensures that primitive functions, which have no environent, are set
+    # up with one for the tracer.
+    if (is.null(env))
+      env <- parent.frame()
+
     stopifnot(is.pairlist(params))
     stopifnot(is.language(body))
     stopifnot(is.environment(env))
@@ -447,7 +453,7 @@ as_chr_scalar <- function(s, collapse="\n", trim="both") {
 }
 
 #' @title Computes coverage from a number of covr results
-#' 
+#'
 #' @export
 #'
 compute_coverage <- function(...) {

@@ -84,8 +84,9 @@ SEXP get_dd_val(int i, SEXP rho, SEXP default_value, bool force=false) {
 
 // [[Rcpp::export]]
 SEXP reassign_function(SEXP target_fun, SEXP new_fun) {
-  if (TYPEOF(target_fun) != CLOSXP) error("target_fun must be a function");
-  if (TYPEOF(new_fun) != CLOSXP) error("new_fun must be a function");
+  // changed this to also support builtins, hopefully this works
+  if (TYPEOF(target_fun) != CLOSXP && TYPEOF(target_fun) != BUILTINSXP) error("target_fun must be a function");
+  if (TYPEOF(new_fun) != CLOSXP && TYPEOF(new_fun) != BUILTINSXP) error("new_fun must be a function");
 
   SET_BODY(target_fun, BODY(new_fun));
 

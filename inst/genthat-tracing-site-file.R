@@ -39,35 +39,27 @@ for (pkg in strsplit(Sys.getenv("GENTHAT_PKGS"), ",", fixed=TRUE)[[1]]) {
     genthat::decorate_environment(pkg)
 }
 
+# Decorate Base Env Functions
+# First, this lets us reassign
+unlockBinding(as.symbol("+"), baseenv())
+# This makes + into a closure, so we can deal with it
+assign("+", function(e1, e2) .Primitive("+")(e1, e2), envir=baseenv())
+# Actually decorate the base env functions
+genthat::decorate_function(`+`, env=baseenv())
+
+print("+:")
+print(`+`)
+
 reg.finalizer(
     e=loadNamespace("genthat"),
     onexit=TRUE,
     f=function(x) {
         genthat::disable_tracing()
 
-        # ostensibly done as the tracer is running now...
-        # uncomment if needed
-        # ret <- genthat::process_traces(
-        #     traces=genthat::copy_traces(genthat::get_tracer()),
-        #     output_dir=Sys.getenv("GENTHAT_OUTPUT_DIR"),
-        #     action=Sys.getenv("GENTHAT_ACTION")
-        # )
-
         stats_file <- Sys.getenv("GENTHAT_STATS_FILE")
 
         # this is important since some tracing might spawn extra instances
         # of R in which case we want to keep all the traces together
         stats_file_exists <- file.exists(stats_file)
-
-        # See above ostensibly comment
-        # write.table(
-        #     ret,
-        #     file=stats_file,
-        #     row.names=FALSE,
-        #     col.names=!stats_file_exists,
-        #     append=stats_file_exists,
-        #     qmethod="double",
-        #     sep=","
-        # )
     }
 )

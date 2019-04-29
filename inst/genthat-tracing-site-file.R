@@ -42,13 +42,16 @@ for (pkg in strsplit(Sys.getenv("GENTHAT_PKGS"), ",", fixed=TRUE)[[1]]) {
 # Decorate Base Env Functions
 # First, this lets us reassign
 unlockBinding(as.symbol("+"), baseenv())
+unlockBinding(as.symbol("["), baseenv())
 # This makes + into a closure, so we can deal with it
 assign("+", function(e1, e2) .Primitive("+")(e1, e2), envir=baseenv())
+assign("[", function(e1, e2) .Primitive("[")(e1, e2), envir=baseenv())
 # Actually decorate the base env functions
 genthat::decorate_function(`+`, env=baseenv())
+genthat::decorate_function(`[`, env=baseenv())
 
-print("+:")
-print(`+`)
+print("[:")
+print(`[`)
 
 reg.finalizer(
     e=loadNamespace("genthat"),

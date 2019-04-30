@@ -45,7 +45,7 @@ unlockBinding(as.symbol("+"), baseenv())
 unlockBinding(as.symbol("["), baseenv())
 # This makes + into a closure, so we can deal with it
 assign("+", function(e1, e2) .Primitive("+")(e1, e2), envir=baseenv())
-assign("[", function(e1, e2) .Primitive("[")(e1, e2), envir=baseenv())
+assign("[", function(e1, e2, ...) .Primitive("[")(e1, e2, ...), envir=baseenv())
 # Actually decorate the base env functions
 genthat::decorate_function(`+`, env=baseenv())
 genthat::decorate_function(`[`, env=baseenv())

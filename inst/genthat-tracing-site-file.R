@@ -46,8 +46,8 @@ unlockBinding(as.symbol("["), baseenv())
 # This makes + into a closure, so we can deal with it
 assign("+", function(e1, e2) .Primitive("+")(e1, e2), envir=baseenv())
 assign("[", function(e1, e2, ...) {
-  if (rlang::is_missing(e2)) { # e2 missing if you do e.g. df[, 2]
-    .Primitive("[")(e1, rlang::missing_arg(), ...)
+  if (is_missing(e2)) { # e2 missing if you do e.g. df[, 2]
+    .Primitive("[")(e1, missing_arg(), ...)
   } else {
     .Primitive("[")(e1, e2, ...)
   }

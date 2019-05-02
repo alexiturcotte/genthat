@@ -49,7 +49,7 @@ assign("[", function(e1, e2, ...) {
   if (rlang::is_missing(e2)) { # e2 missing if you do e.g. df[, 2]
     .Primitive("[")(e1, rlang::missing_arg(), ...)
   } else {
-    .Primitive("[")(e1, e2, ...), envir=baseenv()
+    .Primitive("[")(e1, e2, ...)
   }
 }, envir=baseenv())
 # Actually decorate the base env functions
